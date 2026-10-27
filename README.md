@@ -5,8 +5,8 @@ Atlas horloger interactif en français, dans la continuité graphique de VIVANT.
 ## Sections
 
 - La grande histoire : 33 jalons historiques, tri par période, sources accessibles.
-- Maisons & calibres : 18 maisons, chronologies, mouvements et familles, recherche par nom/référence.
-- Formes & détails : 9 catégories et plus de 80 formes / variantes, illustrations SVG originales, frises par période, fiches d'identification.
+- Maisons & calibres : 35 maisons, chronologies, mouvements et familles, recherche par nom/référence.
+- Formes & détails : 9 catégories et plus de 85 formes / variantes, illustrations SVG originales, frises par période, fiches d'identification.
 - Anatomie : 2 vues vectorielles interactives (habillage extérieur / mouvement mécanique automatique sans chronographe), repères cliquables, explications et précautions de restauration.
 - Recherche globale et mise en page responsive. Site statique sans dépendance, service worker pour cache hors ligne, manifeste PWA.
 
@@ -26,6 +26,7 @@ Les liens des sources figurent dans data.js et l'onglet Sources de l'application
 - style.css : design responsive
 - data.js : histoire, sources et marques
 - details.js : répertoire des formes et pièces anatomiques
+- calibres.js : dossiers techniques et historiques des calibres, maisons complémentaires
 - app.js : navigation, interactions et dessins SVG
 - sw.js : cache statique versionné (incrémenter VERSION à chaque publication modifiant les ressources)
 
