@@ -1,0 +1,19 @@
+{
+  "name": "Horlogerie — Un atlas du temps",
+  "short_name": "HORLOGERIE",
+  "description": "Découvrir l'histoire des montres, les marques, les calibres et l'anatomie horlogère.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f5f1",
+  "theme_color": "#f5f5f1",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "./icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
