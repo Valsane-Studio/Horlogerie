@@ -167,7 +167,7 @@ function renderHistory(){
  $("#historyTimeline").innerHTML=rows.map(e=>'<article class="history-item"><div><div class="history-date">'+esc(e.year)+'</div><div class="history-era">'+(e.era==="origines"?"ORIGINES":e.era==="1800"?"XIXe":e.era==="1900"?"XXe":"XXIe")+'</div></div><div class="history-body"><h3>'+esc(e.title)+'</h3><p>'+esc(e.text)+'</p>'+(e.note?'<div class="history-foot"><span class="history-tag">À NUANCER · '+esc(e.note)+'</span></div>':'')+'<div class="history-foot"><a href="'+esc(A.sources[e.src].url)+'" target="_blank" rel="noopener noreferrer">Consulter la source ↗</a></div></div></article>').join("");
 }
 function renderBrands(){
- const regions=["Toutes","Japon","Suisse","États-Unis","France","Allemagne"];
+ const regions=["Toutes","Japon","Suisse","États-Unis","France","Allemagne","Italie","Russie"];
  $("#brandRegions").innerHTML=regions.map(x=>chip(x,state.region===x,"data-region",x)).join("");
  const query=clean($("#brandSearch").value||"");
  const matches=A.brands.filter(b=>(state.region==="Toutes"||b.region.indexOf(state.region)!==-1)&&(!query||clean([b.name,b.intro,b.story,b.tag,b.region,JSON.stringify(b.families)].join(" ")).includes(query)));
@@ -177,7 +177,7 @@ function renderBrands(){
 function openBrand(id){
  const b=A.brands.find(x=>x.id===id);if(!b)return;
  const timeline='<div class="step-list">'+b.steps.map(s=>'<p><strong>'+esc(s[0])+'</strong>'+esc(s[1])+'</p>').join("")+'</div>';
- const families=b.families.map(f=>'<div class="movement-family"><h4>'+esc(f[0])+'</h4><p>'+esc(f[2])+'</p><div class="movement-list">'+f[1].map(m=>'<div class="movement-pill"><strong>'+esc(m[0])+'</strong><small>'+esc(m[1])+'</small></div>').join("")+'</div></div>').join("");
+ const families=b.families.map(f=>'<div class="movement-family"><h4>'+esc(f[0])+'</h4><p>'+esc(f[2])+'</p><div class="movement-list">'+f[1].map(m=>'<button type="button" class="movement-pill" data-calibre-brand="'+esc(b.id)+' " data-calibre-key="'+esc(m[0])+'"><strong>'+esc(m[0])+'</strong><small>'+esc(m[1])+'</small><small>Ouvrir la fiche ↗</small></button>').join("")+'</div></div>').join("");
  modal('<div class="modal-header"><span class="article-tag">MAISON · '+esc(b.region.toUpperCase())+' · '+esc(b.since)+'</span><h2 id="modalTitle">'+esc(b.name)+'</h2><p>'+esc(b.intro)+'</p></div><div class="modal-section"><h3>Contexte & identité</h3><p>'+esc(b.story)+'</p></div><div class="modal-section"><h3>Les grandes dates</h3>'+timeline+'</div><div class="modal-section"><h3>Familles de calibres et générations</h3><p>Repères d'apparition et de diffusion, parfois approximatifs. Chaque référence peut comporter des suffixes et des sous-versions ; la « dernière utilisation connue » exige un travail d'archives propre au modèle.</p>'+families+'</div><div class="modal-section"><h3>Pour approfondir</h3><p><a href="'+esc(A.sources[b.src].url)+'" target="_blank" rel="noopener noreferrer">Source historique de référence ↗</a></p></div>');
 }
 function renderForms(){
@@ -193,6 +193,18 @@ function renderForms(){
 function openForm(id){
  const d=A.forms[state.form],x=d.items.find(q=>q[0]===id);if(!x)return;
  modal('<div class="modal-header"><span class="article-tag">'+esc(d.sub.toUpperCase())+'</span><h2 id="modalTitle">'+esc(x[1])+'</h2><p>'+esc(x[4])+'</p></div><div class="modal-art">'+formSvg(state.form,id)+'</div><div class="modal-section"><h3>Comment le reconnaître ?</h3><p>'+esc(x[4])+'</p></div><div class="modal-section"><h3>Dans quelles époques ?</h3><p><strong>'+esc(x[2])+'</strong>. Cette période signale une diffusion ou un regain d'intérêt ; la forme peut exister avant et après.</p></div><div class="modal-section"><h3>Un détail à connaître</h3><p class="tip">'+esc(x[5])+'</p></div><div class="modal-section"><h3>Pour identifier une montre</h3><p>Croisez cet indice avec le mouvement, les inscriptions, le fond, le cadran et les détails de construction. Une forme ne suffit pas à dater ni à certifier l'authenticité.</p></div>');
+}
+function openCalibre(brandId,key){
+ const b=A.brands.find(x=>x.id===brandId);if(!b)return;
+ const family=b.families.find(f=>f[1].some(x=>x[0]===key));
+ const movement=family&&family[1].find(x=>x[0]===key);
+ const info=(A.calibres||[]).find(x=>x.brand===brandId&&x.key===key);
+ const period=info?info.period:(movement?movement[1]:"À documenter");
+ const source=info&&info.url?info.url:A.sources[b.src].url;
+ const body=info
+ ?'<div class="modal-section"><h3>Origines & filiation</h3><p>'+esc(info.story)+'</p></div><div class="modal-section"><h3>Architecture & fonctions</h3><p>'+esc(info.mechanics)+'</p></div><div class="modal-section"><h3>Attention aux variantes</h3><p class="tip">'+esc(info.warning)+'</p></div>'
+ :'<div class="modal-section"><h3>Repères historiques disponibles</h3><p>'+esc(family?family[2]:"Famille à préciser.")+'</p><p>Cette référence figure dans la chronologie de la maison, mais nous ne disposons pas encore d’une fiche technique individuelle suffisamment recoupée pour publier une date de fin, un nombre de rubis, une fréquence ou une liste de pièces compatibles. Ces informations restent donc volontairement ouvertes.</p></div>';
+ modal('<div class="modal-header"><span class="article-tag">'+esc(b.name.toUpperCase())+' · FICHE CALIBRE</span><h2 id="modalTitle">'+esc(key)+'</h2><p>Repère chronologique : <strong>'+esc(period)+'</strong>.</p></div>'+body+'<div class="modal-section"><h3>Recherche documentaire</h3><p><a href="'+esc(source)+'" target="_blank" rel="noopener noreferrer">Consulter une référence ↗</a></p><p>Pour identifier un calibre, relever son marquage exact, son suffixe, le type de calendrier et, pour les pièces détachées, les références constructeur.</p></div><button type="button" class="primary" data-return-brand="'+esc(brandId)+'">← Retour à '+esc(b.name)+'</button>');
 }
 function modal(html){
  $("#modalContent").innerHTML=html;
@@ -272,6 +284,8 @@ document.addEventListener("click",e=>{
  const to=e.target.closest("[data-go]");if(to){goPage(to.dataset.go);return;}
  const hf=e.target.closest("[data-history]");if(hf){state.history=hf.dataset.history;renderHistory();return;}
  const region=e.target.closest("[data-region]");if(region){state.region=region.dataset.region;renderBrands();return;}
+ const cal=e.target.closest("[data-calibre-key]");if(cal){openCalibre(cal.dataset.calibreBrand,cal.dataset.calibreKey);return;}
+ const back=e.target.closest("[data-return-brand]");if(back){openBrand(back.dataset.returnBrand);return;}
  const brand=e.target.closest("[data-brand]");if(brand){openBrand(brand.dataset.brand);return;}
  const f=e.target.closest("[data-form]");if(f){state.form=f.dataset.form;renderForms();return;}
  const fid=e.target.closest("[data-form-id]");if(fid){openForm(fid.dataset.formId);return;}
