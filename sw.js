@@ -1,5 +1,5 @@
-const VERSION="horlogerie-v1-20261027-icons";
-const CACHE_FILES=["./","./index.html","./style.css","./data.js","./details.js","./app.js","./manifest.webmanifest","./icons/favicon.svg","./icons/icon-192.png","./icons/icon-512.png"];
+const VERSION="horlogerie-v1-20261027-calibres";
+const CACHE_FILES=["./","./index.html","./style.css","./data.js","./details.js","./calibres.js","./app.js","./manifest.webmanifest","./icons/favicon.svg","./icons/icon-192.png","./icons/icon-512.png"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(CACHE_FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==VERSION).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
 self.addEventListener("fetch",event=>{
